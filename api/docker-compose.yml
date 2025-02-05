@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  pm2-codepush-api-app:
+    container_name: pm2-codepush-api-app
+    build:
+      context: ./
+    image: pm2-codepush-api-img
+    ports:
+      - 3000:3000
+    environment:
+      USERNAME: user
+    networks:
+      - bong-infra
+networks:
+  bong-infra:
+    external: true
