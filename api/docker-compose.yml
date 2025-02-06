@@ -1,7 +1,9 @@
 version: "3.8"
 services:
-  azurlite:
+  azurite:
     image: mcr.microsoft.com/azure-storage/azurite
+    volumes:
+      - ./azurite-data:/data
     ports:
       - "10000:10000"
       - "10001:10001"
@@ -13,7 +15,7 @@ services:
     container_name: codepush-api
     build:
       context: ./
-    image: pm2-codepush-api-img
+    image: bgchoi.github.com/codepush/api
     ports:
       - 3000:3000
     networks:

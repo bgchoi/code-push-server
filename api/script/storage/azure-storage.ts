@@ -887,11 +887,11 @@ export class AzureStorage implements storage.Storage {
       });
       blobServiceClient = BlobServiceClient.fromConnectionString(blobServiceClientConnectionString);
 
-      const DEBUG = false;
+      const DEBUG = true;
       if (DEBUG) {
         console.log("tableServiceClient - devConnectionString : " + tableClient.url);
-        console.log("tableClient - devConnectionString : " + tableServiceClient.url);
-        console.log("blobServiceClient - devConnectionString : " + blobServiceClient.url);
+        console.log("tableClient        - devConnectionString : " + tableServiceClient.url);
+        console.log("blobServiceClient  - devConnectionString : " + blobServiceClient.url);
       }
     } else {
       if ((!accountName && !process.env.AZURE_STORAGE_ACCOUNT) || (!accountKey && !process.env.AZURE_STORAGE_ACCESS_KEY)) {

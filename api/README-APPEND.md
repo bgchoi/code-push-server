@@ -7,9 +7,9 @@ GitHub Organizations의 멤버가 아닌경우 Access Key발급을 하지 않음
 컨테이너
 
 - PM2 : API서버(코어 갯수만큼)
-- Azurlite : 스토리지 서버
+- Azurite : 스토리지 서버
 
-### Azurlite 컨테이너로 구성시 외부 컨테이터에서 접근 가능하도록 변경(2025.02.13)
+### Azurite 컨테이너로 구성시 외부 컨테이터에서 접근 가능하도록 변경(2025.02.13)
 
 - azure-storage.ts
 
