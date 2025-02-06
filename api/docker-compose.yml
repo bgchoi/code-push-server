@@ -1,16 +1,23 @@
 version: "3.8"
 services:
-  pm2-codepush-api-app:
-    container_name: pm2-codepush-api-app
+  azurlite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    networks:
+      - azurite-net
+
+  codepush-api:
+    container_name: codepush-api
     build:
       context: ./
     image: pm2-codepush-api-img
     ports:
       - 3000:3000
-    environment:
-      USERNAME: user
     networks:
-      - bong-infra
+      - azurite-net
 networks:
-  bong-infra:
-    external: true
+  azurite-net:
+    driver: bridge

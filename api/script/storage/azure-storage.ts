@@ -856,11 +856,43 @@ export class AzureStorage implements storage.Storage {
     let blobServiceClient: BlobServiceClient;
 
     if (process.env.EMULATED) {
-      const devConnectionString = "UseDevelopmentStorage=true";
+      // ORIGINAL CODE.
+      //const devConnectionString = "UseDevelopmentStorage=true";
+      //tableServiceClient = TableServiceClient.fromConnectionString(devConnectionString);
+      //tableClient = TableClient.fromConnectionString(devConnectionString, AzureStorage.TABLE_NAME);
+      //blobServiceClient = BlobServiceClient.fromConnectionString(devConnectionString);
 
-      tableServiceClient = TableServiceClient.fromConnectionString(devConnectionString);
-      tableClient = TableClient.fromConnectionString(devConnectionString, AzureStorage.TABLE_NAME);
-      blobServiceClient = BlobServiceClient.fromConnectionString(devConnectionString);
+      // MODIFY CODE.
+      //const tableServiceClientConnectionString =
+      //  "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;QueueEndpoint=http://{HOSTNAME}:10001/devstoreaccount1;";
+      let tableClientConnectionString =
+        "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;TableEndpoint=http://{HOSTNAME}:10002/devstoreaccount1";
+
+      let blobServiceClientConnectionString =
+        "DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://{HOSTNAME}:10000/devstoreaccount1;";
+
+      tableClientConnectionString = tableClientConnectionString.replace(
+        "{HOSTNAME}",
+        process.env.CUSTOM_AZURE_STORAGE_HOST || "localhost"
+      );
+
+      blobServiceClientConnectionString = blobServiceClientConnectionString.replace(
+        "{HOSTNAME}",
+        process.env.CUSTOM_AZURE_STORAGE_HOST || "localhost"
+      );
+
+      tableServiceClient = TableServiceClient.fromConnectionString(tableClientConnectionString, { allowInsecureConnection: true });
+      tableClient = TableClient.fromConnectionString(tableClientConnectionString, AzureStorage.TABLE_NAME, {
+        allowInsecureConnection: true,
+      });
+      blobServiceClient = BlobServiceClient.fromConnectionString(blobServiceClientConnectionString);
+
+      const DEBUG = false;
+      if (DEBUG) {
+        console.log("tableServiceClient - devConnectionString : " + tableClient.url);
+        console.log("tableClient - devConnectionString : " + tableServiceClient.url);
+        console.log("blobServiceClient - devConnectionString : " + blobServiceClient.url);
+      }
     } else {
       if ((!accountName && !process.env.AZURE_STORAGE_ACCOUNT) || (!accountKey && !process.env.AZURE_STORAGE_ACCESS_KEY)) {
         throw new Error("Azure credentials not set");
@@ -1093,7 +1125,7 @@ export class AzureStorage implements storage.Storage {
 
         return q.allSettled(removalPromises);
       })
-      .then(() => { });
+      .then(() => {});
   }
 
   private updateAppWithPermission(accountId: string, app: storage.App, updateCollaborator: boolean = false): q.Promise<void> {
@@ -1175,8 +1207,9 @@ export class AzureStorage implements storage.Storage {
       queryOptions: { filter: query },
     })) {
       if (entity.partitionKeyPointer && entity.partitionKeyPointer !== "" && entity.rowKeyPointer && entity.rowKeyPointer !== "") {
-        const childQuery = odata`PartitionKey eq ${entity.partitionKeyPointer} and (RowKey eq ${entity.rowKeyPointer
-          } or (RowKey gt ${childrenSearchKey} and RowKey lt ${childrenSearchKey + "~"}))`;
+        const childQuery = odata`PartitionKey eq ${entity.partitionKeyPointer} and (RowKey eq ${
+          entity.rowKeyPointer
+        } or (RowKey gt ${childrenSearchKey} and RowKey lt ${childrenSearchKey + "~"}))`;
 
         promises.push(this.getLeafEntities(childQuery, childrenSearchKey));
       } else {
@@ -1220,8 +1253,9 @@ export class AzureStorage implements storage.Storage {
     }
 
     // Fetch both the parent (for error-checking purposes) and the direct children
-    const query = odata`PartitionKey eq ${partitionKey} and (RowKey eq ${rowKey} or (RowKey gt ${childrenSearchKey} and RowKey lt ${childrenSearchKey + "~"
-      }))`;
+    const query = odata`PartitionKey eq ${partitionKey} and (RowKey eq ${rowKey} or (RowKey gt ${childrenSearchKey} and RowKey lt ${
+      childrenSearchKey + "~"
+    }))`;
 
     const entities: TableEntity[] = await this.getLeafEntities(query, childrenSearchKey);
 
