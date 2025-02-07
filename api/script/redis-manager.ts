@@ -109,10 +109,10 @@ export class RedisManager {
           rejectUnauthorized: true,
 
           // APPEND: BG.CHOI
-          ca: fs.readFileSync(process.env.REDIS_TLS_CA).toString(),
-          cert: fs.readFileSync(process.env.REDIS_TLS_CRT).toString(),
-          key: fs.readFileSync(process.env.REDIS_TLS_KEY).toString(),
-          servername: process.env.REDIS_TLS_SERVERNAME,
+          ca: fs.readFileSync(process.env.CUSTOM_REDIS_TLS_CA).toString(),
+          cert: fs.readFileSync(process.env.CUSTOM_REDIS_TLS_CRT).toString(),
+          key: fs.readFileSync(process.env.CUSTOM_REDIS_TLS_KEY).toString(),
+          servername: process.env.CUSTOM_REDIS_TLS_SERVERNAME,
         },
       };
       this._opsClient = redis.createClient(redisConfig);
