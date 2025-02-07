@@ -107,6 +107,8 @@ export class RedisManager {
         tls: {
           // Note: Node defaults CA's to those trusted by Mozilla
           rejectUnauthorized: true,
+
+          // APPEND: BG.CHOI
           ca: fs.readFileSync(process.env.REDIS_TLS_CA).toString(),
           cert: fs.readFileSync(process.env.REDIS_TLS_CRT).toString(),
           key: fs.readFileSync(process.env.REDIS_TLS_KEY).toString(),
