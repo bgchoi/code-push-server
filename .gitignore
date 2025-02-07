@@ -32,6 +32,7 @@ node_modules
 
 # Environment variables
 *.env
+*.env-docker
 
 # Test uploads and downloads
 /uploads
@@ -52,4 +53,5 @@ __blobstorage__
 __queuestorage__
 
 # Azurite Data
-/azurite-data
+/azurite_data
+/redis_data

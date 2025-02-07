@@ -3,13 +3,13 @@ services:
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
     volumes:
-      - ./azurite-data:/data
+      - ./azurite_data:/data
     ports:
       - "10000:10000"
       - "10001:10001"
       - "10002:10002"
     networks:
-      - azurite-net
+      - codepush-net
 
   codepush-api:
     container_name: codepush-api
@@ -19,7 +19,7 @@ services:
     ports:
       - 3000:3000
     networks:
-      - azurite-net
+      - codepush-net
 networks:
-  azurite-net:
-    driver: bridge
+  codepush-net:
+    external: true
