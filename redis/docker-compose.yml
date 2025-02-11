@@ -1,6 +1,7 @@
 version: '2'
 
 services:
+
   redis-cli:
     image: docker.io/bitnami/redis:6.2
     user: "${UID}:${GID}"
@@ -12,6 +13,7 @@ services:
       - ./tests/tls/client:/opt/bitnami/redis/certs
     networks:
       - codepush-net
+
   redis:
     image: docker.io/bitnami/redis:6.2
     user: "${UID}:${GID}"
@@ -29,7 +31,7 @@ services:
       - '6379:6379'
     volumes:
       - ./tests/tls/server:/opt/bitnami/redis/certs
-      - './redis_data:/bitnami/redis/data'
+      - './redis-data:/bitnami/redis/data'
     networks:
       - codepush-net
 
